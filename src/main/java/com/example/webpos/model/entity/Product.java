@@ -2,10 +2,7 @@ package com.example.webpos.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.awt.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -18,6 +15,7 @@ public class Product implements Serializable {
     @Id
     private String id;
 
+    @Lob
     @Column(name = "name", nullable = false)
     private String name;
 

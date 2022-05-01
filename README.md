@@ -1,23 +1,13 @@
 # aw06
 
+下载了两个类别的 metadata，分别是 Arts_Crafts_and_Sewing 和 Grocery_and_Gourmet_Food
 
-[Amazon Review Data (2018)](https://nijianmo.github.io/amazon/index.html) has a huge products metadata set of multiple categories.
+将其按照每 100000 行一个文件分割为 7 个文件，使用 partition step 进行处理
 
-|category| reviews | metadata |
-|--| -- | -- |
-|Amazon Fashion|reviews (883,636 reviews)|metadata (186,637 products)|
-|All Beauty|reviews (371,345 reviews)|metadata (32,992 products)|
-|Appliances|reviews (602,777 reviews)|metadata (30,459 products)|
-| ... |
-|Tools and Home Improvement|reviews (9,015,203 reviews)|metadata (571,982 products)|
-Toys and Games|reviews (8,201,231 reviews)|metadata (634,414 products)|
-Video Games|reviews (2,565,349 reviews)|metadata (84,893 products)|
+每个处理的 step 读取文件中的一行并转换为 json node，再转换至 POJO，最后使用 spring data jpa 存入数据库
 
-Please finish the following tasks:
+观测到 slave step 的 chunk size 会严重影响运行速度，在 chunk size 大小为 1 时完成一个 step 要接近半小时，而将其提升到 100 后每个 step 只需要约 1 分钟，猜想是多次写入数据库大幅提升了运行时间。
 
-- Download no less than two categories of these metadata.
-- Referring the example code in this repo, convert each line in the downloaded files into a POJO of `Product` class and save the object in a database like MySQL. 
-- Integrate the database containing Amazon products with your own AW04 project and build an Amazon WebPOS system.
+最终写入约 58 万条数据，用时约5分钟
 
-
-And, of course, always try to make the system run as fast as possible.
+集成至 aw04 的方案为直接使用 spring data jpa，在原本实体类上加上对应注解即可
