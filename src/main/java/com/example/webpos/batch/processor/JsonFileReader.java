@@ -16,17 +16,20 @@ public class JsonFileReader implements ItemReader<JsonNode> {
     private final BufferedReader reader;
 
     public JsonFileReader(String file) throws FileNotFoundException {
+        if (file == null){
+            throw new FileNotFoundException();
+        }
         if(file.matches("^file:(.*)")){
             file = file.substring(file.indexOf(":") + 1);
         }
         String filename = file;
-        reader = new BufferedReader(new FileReader(new File(filename)));
+        reader = new BufferedReader(new FileReader(filename));
         mapper = new ObjectMapper();
     }
 
 
     @Override
-    public JsonNode read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
+    public JsonNode read() throws UnexpectedInputException, ParseException, NonTransientResourceException, IOException {
         String line = reader.readLine();
         if (line != null){
             return mapper.readTree(line);
